@@ -1,14 +1,27 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 function App() {
   const [input, setInput] = useState("");
   const [Todos, setTodos] = useState([]);
   const addTodo = () => {
     if (input.trim() !== "") {
       setTodos([...Todos, { id: Date.now(), text: input, status: false }]);
+      localStorage.setItem(
+        "input",
+        JSON.stringify([...Todos, { text: input, id : Date.now(),status: false }])
+      );
       setInput("");
     }
   };
+  const inputRef = useRef(null);
+  useEffect(() => {
+    inputRef.current.focus();
+    if (localStorage.getItem("input")) {
+      //key from handlesum
+      setTodos(JSON.parse(localStorage.getItem("input")));
+    }
+    // todoInputRef.current.style.color="red"
+  }, []);
 
   return (
     <div className="app">
@@ -24,6 +37,7 @@ function App() {
         <input
           type="text"
           value={input}
+          ref={inputRef}
           placeholder="🖊️ Add item..."
           onChange={(event) => setInput(event.target.value)}
         />
